@@ -19,7 +19,7 @@ f = symfun(a1*x+a2, [a x]);
 P = zeros(0,size(a,2)+1);
 All_Curves_Detected = zeros(0,size(a,2));
 
-k_min = 1000;
+k_min = 100;
 delta = 0;
 m_min = 10;
 n_t = 2;
