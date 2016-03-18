@@ -19,7 +19,7 @@ f = symfun(a1*x+a2, [a x]);
 P = zeros(0,size(a,2)+1);
 All_Curves_Detected = zeros(0,size(a,2));
 
-k_min = 100;
+k_min = 1000;
 delta = 0;
 m_min = 10;
 n_t = 2;
@@ -46,8 +46,8 @@ while k <= k_min
     if(size(p1,1) >= 1)
         %Step 4: If this is in P (p_c = p or |p_c - p| <= delta), go to 6, else go to 5
         if(size(P,1) >= 1)
-            distances = sqrt(sum(P(:,size(P,2)-1).*P(:,size(P,2)-1),2));
-            distances
+            distances = sqrt(sum((P(:,1:size(P,2)-1) - p(ones(size(P,1), size(P,2)-1))).^2,2));
+            distances;
         else
             c1 = zeros(0,0);
             c2 = zeros(0,0);
