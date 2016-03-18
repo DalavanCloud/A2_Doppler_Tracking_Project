@@ -3,7 +3,7 @@ filename = 'test.PNG';
 Image = imread(filename);
 Image_Gray_Tone = rgb2gray(Image);
 %Image_Rotated_Crop = imrotate(Image, 0, 'crop');
-Gray_Image_Transformed = edge(Image_Gray_Tone, 'canny',0.25);
+Gray_Image_Transformed = edge(Image_Gray_Tone, 'canny',0.985);
 figure, imshow(Image);
 figure, imshow(Image_Gray_Tone);
 figure, imshow(Gray_Image_Transformed);
@@ -46,7 +46,7 @@ while k <= k_min
     if(size(p1,1) >= 1)
         %Step 4: If this is in P (p_c = p or |p_c - p| <= delta), go to 6, else go to 5
         if(size(P,1) >= 1)
-            distances = sqrt(sum(P(:,size(P,2)-1).*P(:,size(P,2)-1),2));
+            distances = sqrt(sum(P.*P,1));
             distances
         else
             c1 = zeros(0,0);
