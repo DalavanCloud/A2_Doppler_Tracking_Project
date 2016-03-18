@@ -19,7 +19,7 @@ f = symfun(a1*x+a2, [a x]);
 P = zeros(0,size(a,2)+1);
 All_Curves_Detected = zeros(0,size(a,2));
 
-k_min = 1000;
+k_min = 100;
 delta = 0;
 m_min = 10;
 n_t = 2;
@@ -35,7 +35,8 @@ k = 0;
 while k <= k_min
     
     %Take some points
-    index = randi(size(D,1),2,1);
+    index = randperm(size(D,1),size(a,2));
+    
     points = D(index,:);
     
     %Step 3: Get a parameter
@@ -46,9 +47,10 @@ while k <= k_min
     if(size(p1,1) >= 1)
         %Step 4: If this is in P (p_c = p or |p_c - p| <= delta), go to 6, else go to 5
         if(size(P,1) >= 1)
-            distances = sqrt(sum((P(:,1:size(P,2)-1) - p(ones(size(P,1), size(P,2)-1))).^2,2));
+            distances = sqrt(sum((P(:,1:size(P,2)-1) - repmat(p,size(P,1),1)).^2,2));
             distances;
         else
+            distances = zeros(0,0);
             c1 = zeros(0,0);
             c2 = zeros(0,0);
         end
@@ -61,19 +63,20 @@ while k <= k_min
             P(c1,3) = P(c1,3) + 1;
             P(c1,3)
             if(P(c1,3) > n_t)
-                [d1,d2] = find(D(:,2) == f(p,D(:,1)));
+                cell = num2cell(p);
+                [d1,d2] = find(D(:,2) == f(cell{:},D(:,1)));
                 if(size(d1,1) >= m_min && size(d2,1) >= m_min)
                     %Step 8
                     'Step 8'
-                    D = D - D(d1,d2);
+                    D(d1,:) = [];
                     P = zeros(0,3);
                     k = -1;
 
                     %Step 9
                     'Step 9'
-                    All_Curves_Detected(size(All_Curves_Detected,1),2) = p.';
+                    All_Curves_Detected(size(All_Curves_Detected,1)+1,:) = p;
                 else
-                    P = P - P(c1,c2);
+                    P(c1,:) = [];
                 end
             end
         else
