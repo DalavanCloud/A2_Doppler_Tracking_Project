@@ -1,9 +1,9 @@
 %Step 1: Scan the image
-filename = 'Test.PNG';
+filename = 'test.PNG';
 Image = imread(filename);
 Image_Gray_Tone = rgb2gray(Image);
 %Image_Rotated_Crop = imrotate(Image, 0, 'crop');
-Gray_Image_Transformed = edge(Image_Gray_Tone, 'canny');
+Gray_Image_Transformed = edge(Image_Gray_Tone, 'canny',0.25);
 figure, imshow(Image);
 figure, imshow(Image_Gray_Tone);
 figure, imshow(Gray_Image_Transformed);
@@ -16,10 +16,10 @@ a = {a1, a2};
 p = size(a);
 f = symfun(a1*x+a2, [a x]);
 
-P = zeros(0,size(a,1)+1);
-All_Curves_Detected = zeros(0,size(a,1));
+P = zeros(0,size(a,2)+1);
+All_Curves_Detected = zeros(0,size(a,2));
 
-k_min = 100;
+k_min = 1000;
 delta = 0;
 m_min = 10;
 n_t = 2;
@@ -41,26 +41,27 @@ while k <= k_min
     %Step 3: Get a parameter
     formulas = f(a{:}, points(:,1)) == points(:,2);
     
-    p_raw_temporary = struct2cell(solve(formulas, a{:}));
-    for i = 1:size(p_raw_temporary,2)
-        p = p_raw_temporary(i);
-    end
-    if(size(p,1) >= 1)
+    [p1, p2] = solve(formulas, a{:});
+    p = [p1, p2];
+    if(size(p1,1) >= 1)
         %Step 4: If this is in P (p_c = p or |p_c - p| <= delta), go to 6, else go to 5
         if(size(P,1) >= 1)
-            distances = sqrt(sum(P.*P));
-            [c1,c2] = find(distances <= delta);
+            distances = sqrt(sum((P(:,1:size(P,2)-1) - p(ones(size(P,1), size(P,2)-1))).^2,2));
+            distances;
         else
-            c = zeros(0,size(p,2));
+            c1 = zeros(0,0);
+            c2 = zeros(0,0);
         end
-        c1
-        c2
-        if(size(c1,1) >= 1 && size(c2,1) >= 1)
+        c1;
+        c2;
+        if(find(distances <= delta))
+            [c1,c2] = find(distances <= delta);
             %Step 6
             'Step 6'
-            P(c1,c2) = P(c1,3) + 1;
+            P(c1,3) = P(c1,3) + 1;
+            P(c1,3)
             if(P(c1,3) > n_t)
-                [d1,d2] = find(D(:,2) == f(p1,D(:,1),p2));
+                [d1,d2] = find(D(:,2) == f(p,D(:,1)));
                 if(size(d1,1) >= m_min && size(d2,1) >= m_min)
                     %Step 8
                     'Step 8'
@@ -78,7 +79,7 @@ while k <= k_min
         else
             %Step 5
             %'Step 5'
-            P(size(P,1) + 1,:) = [p.' 1];
+            P(size(P,1) + 1,:) = [p 1];
         end
         %Step 5: Add p to P with count 1, go to 7
 
