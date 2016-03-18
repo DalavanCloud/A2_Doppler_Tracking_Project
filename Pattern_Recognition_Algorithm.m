@@ -91,8 +91,6 @@ while k <= k_min
 
         %Step 7: k = k + 1, if k > k_max, stop, else go to 2
         k = k + 1;
-        
-        k
 
         %Step 8: Remove all the point of D on the line with p, P = null, k = 0. If
         %mpc > m_min, go to 9, else, this is a false line, put all the points back
